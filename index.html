@@ -163,12 +163,71 @@ section{margin-bottom:60px; padding-top: 20px;}
 .close{ position: absolute; top: 10px; right: 20px; font-size:35px; cursor:pointer; color: #fff; transition: 0.3s; }
 .close:hover { color: red; transform: scale(1.2); }
 
+/* RESPONSIVIDADE (CELULARES E TELAS MENORES) */
+/* =========================================
+   RESPONSIVIDADE (CELULARES E TELAS MENORES)
+   ========================================= */
 @media (max-width: 768px) {
-    .sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 2px solid #00ffcc; display: flex; flex-wrap: wrap; justify-content: center; }
-    .sidebar h2 { width: 100%; padding: 15px; } .sidebar a { padding: 10px 15px; font-size: 14px; border: none; }
-    .content { margin-left: 0; padding: 20px; padding-top: 80px; } .card { width: 100%; margin: 10px 0; }
-    .typing { font-size: 20px; } #site h2 { font-size: 22px; } #bootSequencer { padding: 20px; font-size: 12px; }
-    .top-bar { right: 10px; top: 10px; gap: 5px; } .user-badge { font-size: 12px; padding: 5px; }
+    /* Menu / Sidebar volta para o topo */
+    .sidebar { 
+        width: 100%; 
+        height: auto; 
+        position: relative; 
+        border-right: none; 
+        border-bottom: 2px solid #00ffcc; 
+        display: flex; 
+        flex-wrap: wrap; 
+        justify-content: center; 
+        padding-bottom: 15px;
+        background: #0a0a0a;
+    }
+    .sidebar h2 { width: 100%; padding: 15px 10px; margin: 0; font-size: 22px; }
+    .sidebar a { 
+        flex: 1 1 40%; 
+        margin: 5px; 
+        padding: 10px 5px; 
+        font-size: 13px; 
+        text-align: center;
+        border: 1px solid rgba(0, 255, 204, 0.3);
+        background: rgba(0, 255, 204, 0.05);
+        border-radius: 4px;
+    }
+
+    /* Barra de usuário presa no RODAPÉ (Lá embaixo) */
+    .top-bar { 
+        position: fixed; 
+        top: auto; 
+        bottom: 0; 
+        left: 0;
+        width: 100%; 
+        display: flex;
+        flex-direction: row; /* Coloca lado a lado */
+        justify-content: space-between;
+        align-items: center;
+        background: #050505;
+        padding: 10px 15px; 
+        border-top: 2px solid #00ffcc; /* Borda agora fica em cima */
+        border-bottom: none;
+        z-index: 1000; /* Garante que fique por cima de tudo */
+    }
+    .user-badge { font-size: 10px; padding: 5px; text-align: left; max-width: 60%; line-height: 1.2;}
+    .logout-btn { font-size: 12px; padding: 8px 15px; border-radius: 4px; }
+
+    /* Adiciona um espaço extra no fim do conteúdo para a barra não cobrir o texto */
+    .content { margin-left: 0; padding: 20px 15px 80px 15px; } 
+    .card { width: 100%; margin: 15px 0; }
+    
+    /* Ajustes gerais de texto pro celular */
+    .typing { font-size: 15px; min-height: 80px; margin-bottom: 20px; line-height: 1.6; } 
+    #site h2 { font-size: 20px; margin-top: 10px; margin-bottom: 20px;} 
+    .users { width: 100%; font-size: 14px; padding: 15px; line-height: 1.8; }
+    
+    /* Telinha de Login */
+    .login-box { padding: 25px 20px; max-width: 90%; }
+    .login-header h2 { font-size: 22px; }
+    .login-header p { font-size: 11px; margin-bottom: 15px; }
+    input { font-size: 14px; padding: 10px 0; }
+    .cyber-btn { font-size: 14px; padding: 12px 10px; }
 }
 </style>
 </head>
@@ -304,7 +363,6 @@ section{margin-bottom:60px; padding-top: 20px;}
 </div>
 
 <script>
-// Variável global para saber quem está logado
 let usuarioLogado = ""; 
 let typingTimeout;
 
@@ -338,24 +396,20 @@ async function runBootSequence() {
     }, 800);
 }
 
-// LOGICA DE LOGIN COM DUAS CONTAS
 function tentarLogin(){
     const userField = document.getElementById("user");
     const passField = document.getElementById("pass");
     const loginBox = document.getElementById("loginBox");
     const errorMsg = document.getElementById("error");
 
-    // Verifica Administrador
     if(userField.value === "admin" && passField.value === "1234"){
         usuarioLogado = "ADMIN";
         liberarAcesso(loginBox);
     } 
-    // Verifica Usuário Comum
     else if(userField.value === "usuario" && passField.value === "1234"){
         usuarioLogado = "COMUM";
         liberarAcesso(loginBox);
     } 
-    // Senha Errada
     else {
         errorMsg.innerText = "[ ERRO ] CREDENCIAIS INVÁLIDAS";
         userField.value = ""; passField.value = ""; userField.focus();
@@ -368,7 +422,6 @@ function liberarAcesso(loginBox) {
     document.getElementById("error").innerText = "";
     loginBox.classList.add("glitch-out");
 
-    // Configura o visual da barra do topo
     const badge = document.getElementById("userBadge");
     const barraProgresso = document.getElementById("progress");
     
@@ -379,7 +432,7 @@ function liberarAcesso(loginBox) {
         document.documentElement.style.setProperty('--main-color', '#00ffcc');
     } else {
         badge.innerHTML = "🟡 USUÁRIO COMUM [ACESSO LIMITADO]";
-        badge.style.color = "#ffcc00"; // Amarelo para usuário normal
+        badge.style.color = "#ffcc00"; 
         barraProgresso.style.background = "#ffcc00";
     }
 
@@ -416,7 +469,6 @@ document.getElementById('pass').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') tentarLogin();
 });
 
-// FUNÇÃO MÁGICA DE ABRIR MODAL COM SEGURANÇA
 function abrirModalSeguro(titulo, texto, apenasAdmin) {
     const modal = document.getElementById("modal");
     const modalContent = document.getElementById("modalContentBox");
@@ -426,9 +478,7 @@ function abrirModalSeguro(titulo, texto, apenasAdmin) {
 
     modal.style.display = "flex";
 
-    // Se o card exige admin e quem clicou for usuário comum -> BLOQUEIA!
     if (apenasAdmin === true && usuarioLogado !== "ADMIN") {
-        // Estilo de Erro (Vermelho)
         modalContent.style.borderColor = "#ff3333";
         modalContent.style.boxShadow = "0 0 30px rgba(255, 51, 51, 0.4)";
         tituloEl.style.color = "#ff3333";
@@ -446,9 +496,7 @@ function abrirModalSeguro(titulo, texto, apenasAdmin) {
             </div>
         `;
     } 
-    // Se tiver permissão, abre normal (Verde)
     else {
-        // Restaura estilo original (Verde)
         modalContent.style.borderColor = "#00ffcc";
         modalContent.style.boxShadow = "0 0 30px rgba(0, 255, 204, 0.3)";
         tituloEl.style.color = "#fff";
@@ -467,9 +515,9 @@ window.onclick=function(e){ if(e.target==document.getElementById("modal")) fecha
 function startTyping(){
     let text = "";
     if (usuarioLogado === "ADMIN") {
-        text = ">> CREDENCIAL RECONHECIDA: ADMINISTRADOR.\n>> Privilégios máximos concedidos.\n>> Descriptografando arquivos confidenciais...";
+        text = ">> CREDENCIAL RECONHECIDA: ADMINISTRADOR.\n>> Privilégios máximos concedidos.\n ";
     } else {
-        text = ">> CREDENCIAL RECONHECIDA: USUÁRIO COMUM.\n>> Privilégios limitados ativados.\n>> Modo de leitura apenas...";
+        text = ">> CREDENCIAL RECONHECIDA: USUÁRIO COMUM.\n>> Privilégios limitados ativados.\n ";
     }
 
     let i=0;
@@ -512,5 +560,5 @@ window.onscroll=function(){
     document.getElementById("progress").style.width=scrolled+"%";
 }
 </script>
-</body>
+</body>F
 </html>
