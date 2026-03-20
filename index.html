@@ -3,84 +3,160 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sentinela S.O. - Terminal de Acesso</title>
+<title>segurança em S.O. - Terminal de Acesso</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
 
 <style>
-/* ROLAGEM E BASE */
+/* ROLAGEM SUAVE */
 html { scroll-behavior: smooth; }
-*{margin:0;padding:0;box-sizing:border-box;}
-body{ background:#000; color:#00ffcc; font-family:'Poppins',sans-serif; font-size: 18px; font-weight: 600; overflow-x: hidden; height: 100vh; }
-canvas{ position:fixed; top:0; left:0; z-index:-1; opacity: 0.25; }
 
-/* EFEITO DE DESLIGAR TV (GRAN FINALE) */
-.crt-off { animation: turn-off 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; pointer-events: none; }
-@keyframes turn-off {
-    0% { transform: scale(1, 1.3) translate3d(0, 0, 0); filter: brightness(1); }
-    60% { transform: scale(1, 0.001) translate3d(0, 0, 0); filter: brightness(10); }
-    100% { transform: scale(0, 0.001) translate3d(0, 0, 0); filter: brightness(0); background: #000; }
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+    background:#000;
+    color:#00ffcc;
+    font-family:'Poppins',sans-serif;
+    font-size: 17px;
+    overflow-x: hidden;
+    height: 100vh;
 }
 
-/* TELA DE START (Para liberar o áudio) */
-#startScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 4000; display: flex; justify-content: center; align-items: center; }
-.btn-start { background: transparent; border: 2px solid #00ffcc; color: #00ffcc; font-family: 'Orbitron'; font-size: 24px; padding: 20px 40px; cursor: pointer; text-shadow: 0 0 10px #00ffcc; box-shadow: 0 0 20px rgba(0,255,204,0.2); transition: 0.3s; }
-.btn-start:hover { background: #00ffcc; color: #000; box-shadow: 0 0 40px #00ffcc; }
+canvas{
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:-1;
+    opacity: 0.2;
+}
 
-/* BOOT & LOGIN */
-#bootSequencer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 3000; display: none; flex-direction: column; justify-content: flex-start; padding: 50px; font-family: 'monospace'; color: #00ffcc; font-size: 16px; line-height: 1.5; overflow: hidden; }
+/* =========================================
+   INTRO & LOGIN
+   ========================================= */
+#bootSequencer {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #000; z-index: 3000;
+    display: flex; flex-direction: column; justify-content: flex-start;
+    padding: 50px; font-family: 'monospace'; color: #00ffcc;
+    font-size: 14px; line-height: 1.5; overflow: hidden;
+}
+
 #bootText::after { content: '_'; animation: piscar 0.5s infinite; }
-#loginScreen{ height:100vh; display:none; justify-content:center; align-items:center; padding: 20px; background: radial-gradient(circle, rgba(0,20,15,0.9) 0%, rgba(0,0,0,1) 100%); opacity: 0; transition: opacity 1s ease; z-index: 2000; }
-.login-box{ background:rgba(0, 10, 5, 0.85); padding:40px 30px; border-radius:2px; border:2px solid #00ffcc; box-shadow: 0 0 30px rgba(0, 255, 204, 0.3), inset 0 0 15px rgba(0, 255, 204, 0.1); text-align:center; width: 100%; max-width: 420px; position: relative; overflow: hidden; backdrop-filter: blur(10px); }
-.scan-line { position: absolute; width: 100%; height: 3px; background: #00ffcc; box-shadow: 0 0 15px #00ffcc, 0 0 30px #00ffcc; top: 0; left: 0; animation: scan 4s linear infinite; opacity: 0.5; }
+
+#loginScreen{
+    height:100vh; display:none; justify-content:center; align-items:center;
+    padding: 20px; background: radial-gradient(circle, rgba(0,20,15,0.9) 0%, rgba(0,0,0,1) 100%);
+    opacity: 0; transition: opacity 1s ease; z-index: 2000;
+}
+
+.login-box{
+    background:rgba(0, 10, 5, 0.85); padding:40px 30px; border-radius:2px;
+    border:2px solid #00ffcc; box-shadow: 0 0 30px rgba(0, 255, 204, 0.3), inset 0 0 15px rgba(0, 255, 204, 0.1);
+    text-align:center; width: 100%; max-width: 420px; position: relative;
+    overflow: hidden; backdrop-filter: blur(10px);
+}
+
+.scan-line {
+    position: absolute; width: 100%; height: 3px; background: #00ffcc;
+    box-shadow: 0 0 15px #00ffcc, 0 0 30px #00ffcc; top: 0; left: 0;
+    animation: scan 4s linear infinite; opacity: 0.5;
+}
+
 @keyframes scan { 0% { top: -5%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 105%; opacity: 0; } }
-.login-header h2 { font-family:'Orbitron', sans-serif; font-size: 30px; font-weight: 900; color: #fff; text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc; letter-spacing: 3px; margin-bottom: 5px; text-transform: uppercase; }
-.login-header p { font-family: monospace; color: #ff3333; font-size: 16px; font-weight: bold; letter-spacing: 3px; margin-bottom: 30px; animation: piscarAlerta 1s infinite; }
+
+.login-header h2 {
+    font-family:'Orbitron', sans-serif; font-size: 30px; font-weight: 900; color: #fff;
+    text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc; letter-spacing: 3px; margin-bottom: 5px; text-transform: uppercase;
+}
+
+.login-header p {
+    font-family: monospace; color: #ff3333; font-size: 14px; letter-spacing: 3px;
+    margin-bottom: 30px; animation: piscarAlerta 1s infinite;
+}
+
 @keyframes piscarAlerta { 0%, 100% { opacity: 1; text-shadow: 0 0 10px #ff3333; } 50% { opacity: 0.2; text-shadow: none; } }
-.input-group { display: flex; align-items: center; background: rgba(0, 255, 204, 0.03); border: 1px solid rgba(0, 255, 204, 0.2); margin-bottom: 20px; padding: 0 15px; transition: 0.3s; }
+
+.input-group {
+    display: flex; align-items: center; background: rgba(0, 255, 204, 0.03);
+    border: 1px solid rgba(0, 255, 204, 0.2); margin-bottom: 20px; padding: 0 15px; transition: 0.3s;
+}
+
 .input-group:focus-within { border-color: #00ffcc; box-shadow: 0 0 15px rgba(0, 255, 204, 0.2); background: rgba(0, 255, 204, 0.07); }
 .input-group span { font-family: monospace; font-weight: bold; color: #00ffcc; margin-right: 15px; opacity: 0.7; }
-input { width: 100%; padding: 18px 0; background: transparent; border: none; color: #fff; font-family: monospace; font-size: 18px; outline: none; letter-spacing: 3px; font-weight: bold;}
+
+input { width: 100%; padding: 18px 0; background: transparent; border: none; color: #fff; font-family: monospace; font-size: 16px; outline: none; letter-spacing: 3px; }
 input::placeholder { color: rgba(0, 255, 204, 0.2); }
-.cyber-btn { padding: 18px 20px; background: transparent; border: 2px solid #00ffcc; color: #00ffcc; cursor: pointer; font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: 2px; width: 100%; margin-top: 15px; transition: all 0.3s ease; text-shadow: 0 0 5px #00ffcc; position: relative; overflow: hidden; }
+
+.cyber-btn {
+    padding: 18px 20px; background: transparent; border: 2px solid #00ffcc; color: #00ffcc;
+    cursor: pointer; font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 600;
+    letter-spacing: 2px; width: 100%; margin-top: 15px; transition: all 0.3s ease; text-shadow: 0 0 5px #00ffcc; position: relative; overflow: hidden;
+}
+
+.cyber-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: 0.5s; }
+.cyber-btn:hover::before { left: 100%; }
 .cyber-btn:hover { background: #00ffcc; color: #000; box-shadow: 0 0 25px #00ffcc; text-shadow: none; }
-#error { color: #ff3333; margin-top: 20px; font-family: monospace; font-weight: bold; min-height: 20px; font-size: 16px; text-shadow: 0 0 5px #ff3333; }
+
+#error { color: #ff3333; margin-top: 20px; font-family: monospace; font-weight: bold; min-height: 20px; font-size: 14px; text-shadow: 0 0 5px #ff3333; }
+
 .glitch-out { animation: glitchAnim 0.6s linear forwards; }
-@keyframes glitchAnim { 0% { transform: translate(0); opacity: 1; } 20% { transform: translate(-10px, 5px) skew(5deg); color: #ff00ff; } 40% { transform: translate(10px, -5px) skew(-5deg); color: #00ffff; } 60% { transform: translate(-5px, 0) scaleY(1.1); filter: hue-rotate(90deg); } 80% { transform: translate(5px, 0) scaleY(0.9); opacity: 0.5; } 100% { transform: translate(0) scale(3); opacity: 0; filter: blur(20px); } }
+@keyframes glitchAnim {
+    0% { transform: translate(0); opacity: 1; } 20% { transform: translate(-10px, 5px) skew(5deg); color: #ff00ff; }
+    40% { transform: translate(10px, -5px) skew(-5deg); color: #00ffff; } 60% { transform: translate(-5px, 0) scaleY(1.1); filter: hue-rotate(90deg); }
+    80% { transform: translate(5px, 0) scaleY(0.9); opacity: 0.5; } 100% { transform: translate(0) scale(3); opacity: 0; filter: blur(20px); }
+}
+
 @keyframes piscar { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
 
-/* SITE E CONTEÚDO */
+/* =========================================
+   SITE E CONTEÚDO
+   ========================================= */
 #site{display:none; opacity: 0; transition: opacity 1s ease; position: relative;}
-.top-bar { position: absolute; top: 20px; right: 40px; display: flex; align-items: center; gap: 15px; z-index: 1001; }
-.user-badge { font-family: monospace; font-weight: bold; padding: 10px 15px; border: 1px solid currentColor; background: rgba(0,0,0,0.8); letter-spacing: 1px; }
-.logout-btn { background: #ff3333; color: white; border: none; padding: 10px 15px; font-family: 'Orbitron'; font-weight: bold; cursor: pointer; transition: 0.3s; }
+
+/* IDENTIFICAÇÃO DO USUÁRIO LOGADO */
+.top-bar {
+    position: absolute; top: 20px; right: 40px; display: flex; align-items: center; gap: 15px; z-index: 1001;
+}
+.user-badge {
+    font-family: monospace; font-weight: bold; padding: 10px 15px;
+    border: 1px solid currentColor; background: rgba(0,0,0,0.8); letter-spacing: 1px;
+}
+.logout-btn {
+    background: #ff3333; color: white; border: none; padding: 10px 15px; font-family: 'Orbitron'; cursor: pointer; transition: 0.3s;
+}
 .logout-btn:hover { background: #cc0000; box-shadow: 0 0 15px #ff3333; }
 
-.sidebar{ position:fixed; width:240px; height:100%; background:#0a0a0a; border-right:1px solid #00ffcc; overflow-y: auto; z-index: 1000; display: flex; flex-direction: column; }
+
+.sidebar{ position:fixed; width:240px; height:100%; background:#0a0a0a; border-right:1px solid #00ffcc; overflow-y: auto; z-index: 1000; }
 .sidebar h2{ text-align:center; padding:20px; font-family:'Orbitron'; font-size: 20px; }
-.sidebar a{ display:block; padding:18px; color:#00ffcc; text-decoration:none; font-size: 18px; border-bottom: 1px solid rgba(0,255,204,0.1); transition: 0.2s;}
+.sidebar a{ display:block; padding:18px; color:#00ffcc; text-decoration:none; font-size: 18px; border-bottom: 1px solid rgba(0,255,204,0.1); }
 .sidebar a:hover{ background:#00ffcc; color:black; }
 
-/* Botão de Autodestruição */
-.btn-shutdown { margin-top: auto; padding: 20px; background: #220000; color: #ff3333; font-family: 'Orbitron'; font-weight: bold; text-align: center; cursor: pointer; border-top: 1px solid #ff3333; transition: 0.3s; display: none; }
-.btn-shutdown:hover { background: #ff3333; color: white; box-shadow: 0 0 20px #ff3333; }
+.content{ margin-left:240px; padding:40px; padding-top: 80px; } /* padding-top aumentado pela top-bar */
 
-.content{ margin-left:240px; padding:40px; padding-top: 80px; }
 .typing{ font-family:'Orbitron'; font-size:28px; border-right:2px solid #00ffcc; margin-bottom: 20px; white-space: pre-wrap; color: #fff; text-shadow: 0 0 10px #00ffcc; min-height: 80px;}
+
 #site h2 { font-family:'Orbitron'; font-size: 26px; margin-bottom: 15px; color: #fff; text-shadow: 0 0 5px #00ffcc; }
-.card{ background:#0a0a0a; border:1px solid #00ffcc; padding:25px 20px; margin:10px; display:inline-block; width:250px; text-align:center; box-shadow:0 0 10px #00ffcc; transition:0.3s; cursor: pointer; font-size: 18px; font-weight: 700; vertical-align: top; }
+
+.card{ background:#0a0a0a; border:1px solid #00ffcc; padding:25px 20px; margin:10px; display:inline-block; width:240px; text-align:center; box-shadow:0 0 10px #00ffcc; transition:0.3s; cursor: pointer; font-size: 18px; font-weight: 500; vertical-align: top; }
 .card:hover{ transform:scale(1.08); box-shadow:0 0 20px #00ffcc; background:#001a14; }
-.card span { display: block; font-size: 14px; color: #aaa; margin-top: 10px; font-weight: normal;}
+.card span { display: block; font-size: 12px; color: #888; margin-top: 10px; }
+
+/* Destaque para cards bloqueados visualmente (opcional) */
 .card-locked { border-color: #ffcc00; box-shadow: 0 0 10px #ffcc00; }
 .card-locked:hover { box-shadow: 0 0 20px #ffcc00; background: #1a1500; }
+
 section{margin-bottom:60px; padding-top: 20px;}
+
 .users{ background:#0a0a0a; padding:20px; border:1px solid #00ffcc; margin-top:20px; width: 300px; max-width: 100%; }
+
 #progress{ position:fixed; top:0; left:0; height:4px; background:#00ffcc; width:0%; z-index: 9999; transition: background 0.3s; }
 
 /* MODAL */
 .modal{ display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.9); align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-.modal-content{ background:#000; padding:40px; width:90%; max-width: 650px; border:2px solid #00ffcc; box-shadow:0 0 30px rgba(0, 255, 204, 0.3); color:#00ffcc; border-radius:4px; text-align:left; font-size: 18px; position: relative; transition: all 0.3s ease; line-height: 1.6;}
+.modal-content{ background:#000; padding:40px; width:90%; max-width: 650px; border:2px solid #00ffcc; box-shadow:0 0 30px rgba(0, 255, 204, 0.3); color:#00ffcc; border-radius:4px; text-align:left; font-size: 18px; position: relative; transition: all 0.3s ease; }
 .modal-content h2 { text-align: center; margin-bottom: 25px !important; }
 .modal-content ul { margin-left: 20px; margin-top: 10px; }
 .modal-content li { margin-bottom: 8px; }
@@ -88,9 +164,8 @@ section{margin-bottom:60px; padding-top: 20px;}
 .close:hover { color: red; transform: scale(1.2); }
 
 @media (max-width: 768px) {
-    .sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 2px solid #00ffcc; display: flex; flex-wrap: wrap; justify-content: center; flex-direction: row;}
+    .sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 2px solid #00ffcc; display: flex; flex-wrap: wrap; justify-content: center; }
     .sidebar h2 { width: 100%; padding: 15px; } .sidebar a { padding: 10px 15px; font-size: 14px; border: none; }
-    .btn-shutdown { width: 100%; border-top: none; }
     .content { margin-left: 0; padding: 20px; padding-top: 80px; } .card { width: 100%; margin: 10px 0; }
     .typing { font-size: 20px; } #site h2 { font-size: 22px; } #bootSequencer { padding: 20px; font-size: 12px; }
     .top-bar { right: 10px; top: 10px; gap: 5px; } .user-badge { font-size: 12px; padding: 5px; }
@@ -102,10 +177,6 @@ section{margin-bottom:60px; padding-top: 20px;}
 <canvas id="matrix"></canvas>
 <div id="progress"></div>
 
-<div id="startScreen">
-    <button class="btn-start" onclick="iniciarSistema()">[ INICIAR ]</button>
-</div>
-
 <div id="bootSequencer">
     <div id="bootText"></div>
 </div>
@@ -114,7 +185,7 @@ section{margin-bottom:60px; padding-top: 20px;}
     <div class="login-box" id="loginBox">
         <div class="scan-line"></div>
         <div class="login-header">
-            <h2>Sentinela S.O.</h2>
+            <h2>Segurança em S.O.</h2>
             <p>⚠ INFORME SUAS CREDENCIAIS ⚠</p>
         </div>
         
@@ -134,56 +205,94 @@ section{margin-bottom:60px; padding-top: 20px;}
 </div>
 
 <div id="site">
-    <div class="top-bar">
-        <div id="userBadge" class="user-badge"></div>
-        <button class="logout-btn" onclick="fazerLogout()">DESCONECTAR</button>
+
+<div class="top-bar">
+    <div id="userBadge" class="user-badge"></div>
+    <button class="logout-btn" onclick="fazerLogout()">DESCONECTAR</button>
+</div>
+
+<div class="sidebar">
+    <h2>CyberShield MAX</h2>
+    <a href="#home">🏠 Início</a>
+    <a href="#fundamentos">🛡️ Fundamentos</a>
+    <a href="#pratica">🔧 Prática</a>
+    <a href="#riscos">⚠️ Riscos e Impor.</a>
+</div>
+
+<div class="content">
+
+<section id="home">
+    <h1 class="typing" id="typing"></h1>
+
+    <div class="users">
+        <p style="font-family: Orbitron; margin-bottom: 10px; color: #fff;"><b>Equipe de Segurança:</b></p>
+        <p>👤 Evelyn - Fundamentos</p>
+        <p>👤 Estela - Prática</p>
+        <p>👤 Gabriel Fonseca - Riscos e Importância</p>
+    </div>
+</section>
+
+<section id="fundamentos">
+    <h2>🛡️ Fundamentos</h2>
+    <p style="margin-bottom: 20px; color: #ccc;">Conceitos base de proteção do sistema.</p>
+
+    <div class="card" onclick="abrirModalSeguro('📌 Conceito de Segurança','Proteção vital para evitar desastres.<br><br>• Protege dados e sistemas.<br>• Evita acessos não autorizados.<br>• Garante que o sistema funcione.', false)">
+        📌 Conceito <br>de Segurança
+        <span>Clique para expandir</span>
     </div>
 
-    <div class="sidebar">
-        <h2>Sentinela S.O.</h2>
-        <a href="#home">🏠 Início</a>
-        <a href="#fundamentos">🛡️ Fundamentos</a>
-        <a href="#pratica">🔧 Prática</a>
-        <a href="#riscos">⚠️ Riscos e Impor.</a>
-        
-        <div id="btnShutdown" class="btn-shutdown" onclick="finalizarSistema()">🔴 ENCERRAR SISTEMA</div>
+    <div class="card" onclick="abrirModalSeguro('🔐 Tríade AAA','Os pilares do controle no sistema:<br><br>• <b>Autenticação:</b> Quem é você?<br>• <b>Autorização:</b> O que pode fazer?<br>• <b>Auditoria:</b> Rastro das ações.', false)">
+        🔐 Autenticação,<br>Autor. e Auditoria
+        <span>Clique para expandir</span>
     </div>
 
-    <div class="content">
-        <section id="home">
-            <h1 class="typing" id="typing"></h1>
-            <div class="users">
-                <p style="font-family: Orbitron; margin-bottom: 10px; color: #fff;"><b>Equipe de Segurança:</b></p>
-                <p>👤 Evelyn - Fundamentos</p>
-                <p>👤 Estela - Prática</p>
-                <p>👤 Gabriel Fonseca - Riscos e Importância</p>
-            </div>
-        </section>
-
-        <section id="fundamentos">
-            <h2>🛡️ Fundamentos</h2>
-            <p style="margin-bottom: 20px; color: #ccc;">Conceitos base de proteção do sistema.</p>
-            <div class="card" onclick="abrirModalSeguro('📌 Conceito de Segurança','Proteção vital para evitar desastres.<br><br>• Protege dados e sistemas.<br>• Evita acessos não autorizados.<br>• Garante que o sistema funcione.', false)">📌 Conceito <br>de Segurança<span>Clique para expandir</span></div>
-            <div class="card" onclick="abrirModalSeguro('🔐 Tríade AAA','Os pilares do controle no sistema:<br><br>• <b>Autenticação:</b> Quem é você?<br>• <b>Autorização:</b> O que pode fazer?<br>• <b>Auditoria:</b> Rastro das ações.', false)">🔐 Autenticação,<br>Autor. e Auditoria<span>Clique para expandir</span></div>
-            <div class="card" onclick="abrirModalSeguro('🔑 Controle de Acesso','Modelos que definem regras:<br><br>• <b>DAC:</b> O dono decide quem acessa.<br>• <b>MAC:</b> Regras rígidas (militar).<br>• <b>RBAC:</b> Acesso por cargo.', false)">🔑 Controle <br>de Acesso<span>Clique para expandir</span></div>
-        </section>
-
-        <section id="pratica">
-            <h2>🔧 Na Prática</h2>
-            <p style="margin-bottom: 20px; color: #ccc;">A segurança aplicada no dia a dia.</p>
-            <div class="card" onclick="abrirModalSeguro('📁 Permissões de Arquivos','Regras de interação:<br><br>• <b>Leitura:</b> Visualizar.<br>• <b>Escrita:</b> Modificar ou apagar.<br>• <b>Execução:</b> Rodar programa.', false)">📁 Permissões <br>de Arquivos<span>Clique para expandir</span></div>
-            <div class="card" onclick="abrirModalSeguro('👥 Usuários e Grupos','A separação de poderes:<br><br>• <b>Administrador:</b> Controle total.<br>• <b>Usuário Comum:</b> Acesso limitado.<br>• <b>Grupos:</b> Regras para várias pessoas.', false)">👥 Usuários <br>e Grupos<span>Clique para expandir</span></div>
-            <div class="card" onclick="abrirModalSeguro('🔒 Mecanismos de Segurança','Barreiras ativas de proteção:<br><br>• <b>Criptografia:</b> Embaralha dados.<br>• <b>Firewall:</b> Filtra a rede.<br>• <b>Antivírus:</b> Bloqueia pragas.', false)">🔒 Mecanismos <br>de Segurança<span>Clique para expandir</span></div>
-        </section>
-
-        <section id="riscos">
-            <h2>⚠️ Riscos e Importância (Área Sensível)</h2>
-            <p style="margin-bottom: 20px; color: #ccc;">Arquivos confidenciais. Acesso apenas para Administradores.</p>
-            <div class="card card-locked" onclick="abrirModalSeguro('⚠️ Ameaças Digitais','Inimigos comuns do S.O.:<br><br>• <b>Vírus/Malware:</b> Destroem dados.<br>• <b>Phishing:</b> Engana o usuário.<br>• <b>Ransomware:</b> Sequestra a máquina.', true)">⚠️ Ameaças <br>Digitais<span>Acesso Restrito</span></div>
-            <div class="card card-locked" onclick="abrirModalSeguro('🧠 Menor Privilégio','Regra de ouro:<br><br>• Conceder <b>APENAS</b> o acesso mínimo.<br>• Se invadido, o dano fica contido.<br>• Previne acidentes.', true)">🧠 Princípio do <br>Menor Privilégio<span>Acesso Restrito</span></div>
-            <div class="card card-locked" onclick="abrirModalSeguro('🏢 Importância e Conclusão','O impacto no mundo real:<br><br>• Protege dados pessoais e empresas.<br>• Evita multas e paralisação.<br>• <b>Conclusão:</b> Sem segurança = desastre.', true)">🏢 Importância <br>e Conclusão<span>Acesso Restrito</span></div>
-        </section>
+    <div class="card" onclick="abrirModalSeguro('🔑 Controle de Acesso','Modelos que definem regras:<br><br>• <b>DAC:</b> O dono decide quem acessa.<br>• <b>MAC:</b> Regras rígidas (militar).<br>• <b>RBAC:</b> Acesso por cargo.', false)">
+        🔑 Controle <br>de Acesso
+        <span>Clique para expandir</span>
     </div>
+</section>
+
+<section id="pratica">
+    <h2>🔧 Na Prática</h2>
+    <p style="margin-bottom: 20px; color: #ccc;">A segurança aplicada no dia a dia.</p>
+
+    <div class="card" onclick="abrirModalSeguro('📁 Permissões de Arquivos','Regras de interação:<br><br>• <b>Leitura:</b> Visualizar.<br>• <b>Escrita:</b> Modificar ou apagar.<br>• <b>Execução:</b> Rodar programa.', false)">
+        📁 Permissões <br>de Arquivos
+        <span>Clique para expandir</span>
+    </div>
+
+    <div class="card" onclick="abrirModalSeguro('👥 Usuários e Grupos','A separação de poderes:<br><br>• <b>Administrador:</b> Controle total.<br>• <b>Usuário Comum:</b> Acesso limitado.<br>• <b>Grupos:</b> Regras para várias pessoas.', false)">
+        👥 Usuários <br>e Grupos
+        <span>Clique para expandir</span>
+    </div>
+
+    <div class="card" onclick="abrirModalSeguro('🔒 Mecanismos de Segurança','Barreiras ativas de proteção:<br><br>• <b>Criptografia:</b> Embaralha dados.<br>• <b>Firewall:</b> Filtra a rede.<br>• <b>Antivírus:</b> Bloqueia pragas.', false)">
+        🔒 Mecanismos <br>de Segurança
+        <span>Clique para expandir</span>
+    </div>
+</section>
+
+<section id="riscos">
+    <h2>⚠️ Riscos e Importância (Área Sensível)</h2>
+    <p style="margin-bottom: 20px; color: #ccc;">Arquivos confidenciais. Acesso apenas para Administradores.</p>
+
+    <div class="card card-locked" onclick="abrirModalSeguro('⚠️ Ameaças Digitais','Inimigos comuns do S.O.:<br><br>• <b>Vírus/Malware:</b> Destroem dados.<br>• <b>Phishing:</b> Engana o usuário.<br>• <b>Ransomware:</b> Sequestra a máquina.', true)">
+        ⚠️ Ameaças <br>Digitais
+        <span>Acesso Restrito</span>
+    </div>
+
+    <div class="card card-locked" onclick="abrirModalSeguro('🧠 Menor Privilégio','Regra de ouro:<br><br>• Conceder <b>APENAS</b> o acesso mínimo.<br>• Se invadido, o dano fica contido.<br>• Previne acidentes.', true)">
+        🧠 Princípio do <br>Menor Privilégio
+        <span>Acesso Restrito</span>
+    </div>
+
+    <div class="card card-locked" onclick="abrirModalSeguro('🏢 Importância e Conclusão','O impacto no mundo real:<br><br>• Protege dados pessoais e empresas.<br>• Evita multas e paralisação.<br>• <b>Conclusão:</b> Sem segurança = desastre.', true)">
+        🏢 Importância <br>e Conclusão
+        <span>Acesso Restrito</span>
+    </div>
+</section>
+
+</div>
 </div>
 
 <div id="modal" class="modal">
@@ -195,58 +304,17 @@ section{margin-bottom:60px; padding-top: 20px;}
 </div>
 
 <script>
-// =========================================
-// SISTEMA DE ÁUDIO NATIVO
-// =========================================
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-function playSound(freq, type, duration, vol) {
-    if(audioCtx.state === 'suspended') audioCtx.resume();
-    const oscillator = audioCtx.createOscillator();
-    const gainNode = audioCtx.createGain();
-    oscillator.type = type;
-    oscillator.frequency.value = freq;
-    gainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-    oscillator.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-    oscillator.start();
-    oscillator.stop(audioCtx.currentTime + duration);
-}
-
-function beepClick() { playSound(800, 'square', 0.05, 0.03); }
-function beepSuccess() { playSound(1200, 'sine', 0.1, 0.1); setTimeout(()=>playSound(1600, 'sine', 0.2, 0.1), 100); }
-function beepError() { playSound(150, 'sawtooth', 0.4, 0.15); }
-function beepShutdown() { 
-    if(audioCtx.state === 'suspended') audioCtx.resume();
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(300, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 1.5); // Som caindo
-    gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
-    osc.connect(gain); gain.connect(audioCtx.destination);
-    osc.start(); osc.stop(audioCtx.currentTime + 1.5);
-}
-
-// =========================================
-// LÓGICA DO SISTEMA
-// =========================================
+// Variável global para saber quem está logado
 let usuarioLogado = ""; 
 let typingTimeout;
 
-function iniciarSistema() {
-    // Inicia o contexto de áudio ao clicar
-    if(audioCtx.state === 'suspended') audioCtx.resume();
-    document.getElementById('startScreen').style.display = 'none';
-    document.getElementById('bootSequencer').style.display = 'flex';
+window.onload = function() {
     runBootSequence();
-}
+};
 
 async function runBootSequence() {
     const bootText = document.getElementById('bootText');
-    const lines = [
+   const lines = [
         "> SEGURANÇA EM SISTEMAS OPERACIONAIS [Versão 1.0.24]",
         "> Inicializando núcleo do sistema...",
         "> Carregando módulos da Tríade AAA (Autenticação, Autorização, Auditoria)... [ ATIVO ]",
@@ -260,7 +328,6 @@ async function runBootSequence() {
     ];
     for (let line of lines) {
         bootText.innerHTML += line + "<br>";
-        beepClick(); // Som de digitação
         await new Promise(resolve => setTimeout(resolve, Math.random() * 80 + 30));
     }
     setTimeout(() => {
@@ -271,24 +338,25 @@ async function runBootSequence() {
     }, 800);
 }
 
+// LOGICA DE LOGIN COM DUAS CONTAS
 function tentarLogin(){
     const userField = document.getElementById("user");
     const passField = document.getElementById("pass");
     const loginBox = document.getElementById("loginBox");
     const errorMsg = document.getElementById("error");
 
+    // Verifica Administrador
     if(userField.value === "admin" && passField.value === "1234"){
         usuarioLogado = "ADMIN";
-        beepSuccess();
         liberarAcesso(loginBox);
     } 
+    // Verifica Usuário Comum
     else if(userField.value === "usuario" && passField.value === "1234"){
         usuarioLogado = "COMUM";
-        beepSuccess();
         liberarAcesso(loginBox);
     } 
+    // Senha Errada
     else {
-        beepError();
         errorMsg.innerText = "[ ERRO ] CREDENCIAIS INVÁLIDAS";
         userField.value = ""; passField.value = ""; userField.focus();
         loginBox.style.animation = "shake 0.3s";
@@ -300,20 +368,19 @@ function liberarAcesso(loginBox) {
     document.getElementById("error").innerText = "";
     loginBox.classList.add("glitch-out");
 
+    // Configura o visual da barra do topo
     const badge = document.getElementById("userBadge");
     const barraProgresso = document.getElementById("progress");
-    const btnShutdown = document.getElementById("btnShutdown");
     
     if (usuarioLogado === "ADMIN") {
         badge.innerHTML = "🟢 ADMINISTRADOR [PODER TOTAL]";
         badge.style.color = "#00ffcc";
         barraProgresso.style.background = "#00ffcc";
-        btnShutdown.style.display = "block"; // Mostra botão vermelho pro admin
+        document.documentElement.style.setProperty('--main-color', '#00ffcc');
     } else {
         badge.innerHTML = "🟡 USUÁRIO COMUM [ACESSO LIMITADO]";
-        badge.style.color = "#ffcc00"; 
+        badge.style.color = "#ffcc00"; // Amarelo para usuário normal
         barraProgresso.style.background = "#ffcc00";
-        btnShutdown.style.display = "none"; // Esconde pro usuário comum
     }
 
     setTimeout(() => {
@@ -345,20 +412,11 @@ function fazerLogout() {
     }, 500);
 }
 
-// GRAN FINALE: Desligar Sistema
-function finalizarSistema() {
-    beepShutdown(); // Som caindo
-    document.body.classList.add('crt-off'); // Animação CSS da TV desligando
-}
-
 document.getElementById('pass').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') tentarLogin();
 });
 
-// Clica no teclado faz barulho
-document.getElementById('user').addEventListener('input', beepClick);
-document.getElementById('pass').addEventListener('input', beepClick);
-
+// FUNÇÃO MÁGICA DE ABRIR MODAL COM SEGURANÇA
 function abrirModalSeguro(titulo, texto, apenasAdmin) {
     const modal = document.getElementById("modal");
     const modalContent = document.getElementById("modalContentBox");
@@ -368,8 +426,9 @@ function abrirModalSeguro(titulo, texto, apenasAdmin) {
 
     modal.style.display = "flex";
 
+    // Se o card exige admin e quem clicou for usuário comum -> BLOQUEIA!
     if (apenasAdmin === true && usuarioLogado !== "ADMIN") {
-        beepError(); // Som de Erro!
+        // Estilo de Erro (Vermelho)
         modalContent.style.borderColor = "#ff3333";
         modalContent.style.boxShadow = "0 0 30px rgba(255, 51, 51, 0.4)";
         tituloEl.style.color = "#ff3333";
@@ -387,8 +446,9 @@ function abrirModalSeguro(titulo, texto, apenasAdmin) {
             </div>
         `;
     } 
+    // Se tiver permissão, abre normal (Verde)
     else {
-        beepClick();
+        // Restaura estilo original (Verde)
         modalContent.style.borderColor = "#00ffcc";
         modalContent.style.boxShadow = "0 0 30px rgba(0, 255, 204, 0.3)";
         tituloEl.style.color = "#fff";
@@ -418,7 +478,6 @@ function startTyping(){
     function type(){
         if(i<text.length){
             typingElement.innerHTML+=text.charAt(i);
-            if(text.charAt(i) !== " " && text.charAt(i) !== "\n" && Math.random() > 0.5) beepClick();
             i++;
             typingTimeout = setTimeout(type, 40);
         }
@@ -431,7 +490,7 @@ const canvas=document.getElementById("matrix");
 const ctx=canvas.getContext("2d");
 function initMatrix() { canvas.height=window.innerHeight; canvas.width=window.innerWidth; }
 initMatrix();
-let letters="01".split(""); let fontSize=18; let columns=canvas.width/fontSize; let drops=[];
+let letters="01".split(""); let fontSize=16; let columns=canvas.width/fontSize; let drops=[];
 for(let x=0;x<columns;x++) drops[x]=1;
 function draw(){
     ctx.fillStyle="rgba(0,0,0,0.05)"; ctx.fillRect(0,0,canvas.width,canvas.height);
