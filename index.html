@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CyberShield MAX</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+
+<style>
+/* ROLAGEM SUAVE ADICIONADA AQUI */
+html {
+    scroll-behavior: smooth; 
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+    background:#000;
+    color:#00ffcc;
+    font-family:'Poppins',sans-serif;
+    font-size: 17px;
+}
+
+canvas{
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:-1;
+}
+
+/* LOGIN */
+#loginScreen{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding: 20px;
+}
+
+.login-box{
+    background:rgba(0,0,0,0.85);
+    padding:40px;
+    border-radius:15px;
+    border:1px solid #00ffcc;
+    box-shadow:0 0 25px #00ffcc;
+    text-align:center;
+    width: 100%;
+    max-width: 400px; /* Evita que fique muito largo no PC */
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    background:#111;
+    border:1px solid #00ffcc;
+    color:#00ffcc;
+    font-size: 16px;
+    outline: none;
+}
+
+button{
+    padding:12px 20px;
+    background:#00ffcc;
+    border:none;
+    color:black;
+    cursor:pointer;
+    font-size: 16px;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 10px;
+}
+
+button:hover{background:white;}
+
+#site{display:none;}
+
+/* SIDEBAR */
+.sidebar{
+    position:fixed;
+    width:240px;
+    height:100%;
+    background:#0a0a0a;
+    border-right:1px solid #00ffcc;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.sidebar h2{
+    text-align:center;
+    padding:20px;
+    font-family:'Orbitron';
+    font-size: 20px;
+}
+
+.sidebar a{
+    display:block;
+    padding:18px;
+    color:#00ffcc;
+    text-decoration:none;
+    font-size: 18px;
+    border-bottom: 1px solid rgba(0,255,204,0.1);
+}
+
+.sidebar a:hover{
+    background:#00ffcc;
+    color:black;
+}
+
+.content{
+    margin-left:240px;
+    padding:40px;
+}
+
+/* TITULO */
+.typing{
+    font-family:'Orbitron';
+    font-size:32px;
+    border-right:2px solid #00ffcc;
+    margin-bottom: 20px;
+    white-space: pre-wrap;
+}
+
+h2 {
+    font-family:'Orbitron';
+    font-size: 26px;
+    margin-bottom: 15px;
+    color: #fff;
+    text-shadow: 0 0 5px #00ffcc;
+}
+
+/* CARDS */
+.card{
+    background:#0a0a0a;
+    border:1px solid #00ffcc;
+    padding:25px 20px;
+    margin:10px;
+    display:inline-block;
+    width:240px;
+    text-align:center;
+    box-shadow:0 0 10px #00ffcc;
+    transition:0.3s;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 500;
+    vertical-align: top;
+}
+
+.card:hover{
+    transform:scale(1.08);
+    box-shadow:0 0 20px #00ffcc;
+    background:#001a14;
+}
+
+.card span {
+    display: block;
+    font-size: 12px;
+    color: #888;
+    margin-top: 10px;
+}
+
+section{margin-bottom:60px; padding-top: 20px;}
+
+/* USERS */
+.users{
+    background:#0a0a0a;
+    padding:20px;
+    border:1px solid #00ffcc;
+    margin-top:20px;
+    width: 300px;
+    max-width: 100%;
+}
+
+/* PROGRESS */
+#progress{
+    position:fixed;
+    top:0;
+    left:0;
+    height:4px;
+    background:#00ffcc;
+    width:0%;
+    z-index: 9999;
+}
+
+/* MODAL */
+.modal{
+    display:none;
+    position:fixed;
+    z-index:2000;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.8);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content{
+    background:#0a0a0a;
+    padding:40px;
+    width:90%;
+    max-width: 600px; /* Limita a largura em telas grandes */
+    border:1px solid #00ffcc;
+    box-shadow:0 0 20px #00ffcc;
+    color:#00ffcc;
+    border-radius:10px;
+    text-align:left; /* Texto alinhado à esquerda para listas */
+    font-size: 18px;
+    position: relative;
+}
+
+.modal-content ul {
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+.modal-content li {
+    margin-bottom: 8px;
+}
+
+.close{
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size:35px;
+    cursor:pointer;
+    color: #fff;
+}
+.close:hover { color: red; }
+
+/* RESPONSIVIDADE PARA CELULARES */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-right: none;
+        border-bottom: 2px solid #00ffcc;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .sidebar h2 { width: 100%; padding: 15px; }
+    .sidebar a {
+        padding: 10px 15px;
+        font-size: 14px;
+        border: none;
+    }
+    .content {
+        margin-left: 0;
+        padding: 20px;
+    }
+    .card {
+        width: 100%; /* Cards ocupam a tela toda no celular */
+        margin: 10px 0;
+    }
+    .typing { font-size: 24px; }
+    h2 { font-size: 22px; }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="matrix"></canvas>
+<div id="progress"></div>
+
+<div id="loginScreen">
+    <div class="login-box">
+        <h2 style="font-family:Orbitron;">Segurança em S.O</h2>
+        <input id="user" placeholder="Usuário">
+        <input id="pass" type="password" placeholder="Senha">
+        <button onclick="login()">Entrar</button>
+        <p id="error" style="color:red; margin-top: 10px;"></p>
+    </div>
+</div>
+
+<div id="site">
+
+<div class="sidebar">
+    <h2>CyberShield MAX</h2>
+    <a href="#home">🏠 Início</a>
+    <a href="#fundamentos">🛡️ Fundamentos</a>
+    <a href="#pratica">🔧 Prática</a>
+    <a href="#riscos">⚠️ Riscos e Impor.</a>
+</div>
+
+<div class="content">
+
+<section id="home">
+    <h1 class="typing" id="typing"></h1>
+
+    <div class="users">
+        <p style="font-family: Orbitron; margin-bottom: 10px;"><b>Equipe de Segurança:</b></p>
+        <p>👤 Pessoa 1 - Fundamentos</p>
+        <p>👤 Pessoa 2 - Prática</p>
+        <p>👤 Pessoa 3 - Riscos e Importância</p>
+    </div>
+</section>
+
+<section id="fundamentos">
+    <h2>🛡️ Conjunto 1: Fundamentos (Pessoa 1)</h2>
+    <p style="margin-bottom: 20px; color: #ccc;">Conceitos base de proteção do sistema.</p>
+
+    <div class="card" onclick="abrirModal('📌 Conceito de Segurança','Proteção vital para evitar desastres.<br><br>• Protege dados e sistemas (Windows, Linux, macOS).<br>• Evita acessos não autorizados.<br>• Garante que o sistema funcione sem interrupções.')">
+        📌 Conceito <br>de Segurança
+        <span>Clique para expandir</span>
+    </div>
+
+    <div class="card" onclick="abrirModal('🔐 Tríade AAA','Os pilares do controle no sistema:<br><br>• <b>Autenticação:</b> Quem é você? (ex: senha).<br>• <b>Autorização:</b> O que você pode fazer? (ex: permissões).<br>• <b>Auditoria:</b> Registro e rastro das suas ações.')">
+        🔐 Autenticação,<br>Autor. e Auditoria
+        <span>Clique para expandir</span>
+    </div>
+
+    <div class="card" onclick="abrirModal('🔑 Controle de Acesso','Modelos que definem regras de uso:<br><br>• <b>DAC:</b> O dono do arquivo decide quem acessa.<br>• <b>MAC:</b> O sistema impõe regras rígidas (uso militar).<br>• <b>RBAC:</b> Acesso liberado pelo cargo (RH, TI, etc).')">
+        🔑 Controle <br>de Acesso
+        <span>Clique para expandir</span>
+    </div>
+</section>
+
+<section id="pratica">
+    <h2>🔧 Conjunto 2: Prática (Pessoa 2)</h2>
+    <p style="margin-bottom: 20px; color: #ccc;">A segurança aplicada no dia a dia.</p>
+
+    <div class="card" onclick="abrirModal('📁 Permissões de Arquivos','Regras de interação com pastas e arquivos:<br><br>• <b>Leitura:</b> Apenas visualizar.<br>• <b>Escrita:</b> Modificar ou apagar.<br>• <b>Execução:</b> Rodar como um programa.')">
+        📁 Permissões <br>de Arquivos
+        <span>Clique para expandir</span>
+    </div>
+
+    <div class="card" onclick="abrirModal('👥 Usuários e Grupos','A separação de poderes:<br><br>• <b>Administrador:</b> Controle total e absoluto.<br>• <b>Usuário Comum:</b> Acesso limitado para evitar danos.<br>• <b>Grupos:</b> Facilita aplicar regras para várias pessoas.')">
+        👥 Usuários <br>e Grupos
+        <span>Clique para expandir</span>
+    </div>
+
+    <div class="card" onclick="abrirModal('🔒 Mecanismos de Segurança','Barreiras ativas de proteção:<br><br>• <b>Criptografia:</b> Embaralha dados.<br>• <b>Firewall:</b> Filtra a rede.<br>• <b>Antivírus:</b> Bloqueia pragas.<br>• <b>Atualizações:</b> Tapa buracos do sistema.')">
+        🔒 Mecanismos <br>de Segurança
+        <span>Clique para expandir</span>
+    </div>
+</section>
+
+<section id="riscos">
+    <h2>⚠️ Conjunto 3: Riscos e Importância (Pessoa 3)</h2>
+    <p style="margin-bottom: 20px; color: #ccc;">Por que não podemos ignorar as regras.</p>
+
+    <div class="card" onclick="abrirModal('⚠️ Ameaças Digitais','Inimigos comuns do Sistema Operacional:<br><br>• <b>Vírus e Malware:</b> Destroem ou roubam dados.<br>• <b>Phishing:</b> Engana o usuário para obter senhas.<br>• <b>Ransomware:</b> Sequestra a máquina e exige resgate.')">
+        ⚠️ Ameaças <br>Digitais
+        <span>Clique para expandir</span>
+    </div>
+
+    <div class="card" onclick="abrirModal('🧠 Menor Privilégio','A regra de ouro da cibersegurança:<br><br>• Conceder <b>APENAS</b> o acesso mínimo necessário.<br>• Se um aplicativo for invadido, o dano fica contido.<br>• Previne acidentes e ataques em massa.')">
+        🧠 Princípio do <br>Menor Privilégio
+        <span>Clique para expandir</span>
+    </div>
+
+    <div class="card" onclick="abrirModal('🏢 Importância e Conclusão','O impacto no mundo real:<br><br>• Protege dados pessoais e sigilo de empresas.<br>• Evita multas e paralisação dos negócios.<br>• <b>Conclusão:</b> Sem segurança, o sistema é apenas uma porta aberta para o desastre.')">
+        🏢 Importância <br>e Conclusão
+        <span>Clique para expandir</span>
+    </div>
+</section>
+
+</div>
+</div>
+
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span onclick="fecharModal()" class="close">&times;</span>
+        <h2 id="modalTitulo" style="margin-bottom: 20px; color: #fff; text-align: center;"></h2>
+        <div id="modalTexto" style="line-height: 1.6;"></div>
+    </div>
+</div>
+
+<script>
+// LOGIN NORMAL E COM ENTER
+function login(){
+    if(user.value==="admin" && pass.value==="1234"){
+        loginScreen.style.display="none";
+        site.style.display="block";
+        startTyping();
+    }else{
+        error.innerText="Acesso negado!";
+    }
+}
+
+// Evento para logar apertando ENTER no campo de senha
+document.getElementById('pass').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        login();
+    }
+});
+
+// MODAL
+function abrirModal(titulo,texto){
+    modal.style.display="flex"; // Usando flex para centralizar
+    modalTitulo.innerHTML=titulo;
+    modalTexto.innerHTML=texto; // Aceita as tags <br> e <b> que coloquei nos textos
+}
+
+function fecharModal(){
+    modal.style.display="none";
+}
+
+window.onclick=function(e){
+    if(e.target==modal) fecharModal();
+}
+
+// TYPING
+function startTyping(){
+    let text="Acesso Concedido.\nCarregando dados de segurança...";
+    let i=0;
+    document.getElementById("typing").innerHTML = "";
+    function type(){
+        if(i<text.length){
+            document.getElementById("typing").innerHTML+=text.charAt(i);
+            i++;
+            setTimeout(type,40);
+        }
+    }
+    type();
+}
+
+// MATRIX
+const canvas=document.getElementById("matrix");
+const ctx=canvas.getContext("2d");
+
+function initMatrix() {
+    canvas.height=window.innerHeight;
+    canvas.width=window.innerWidth;
+}
+initMatrix();
+
+let letters="01".split("");
+let fontSize=16; 
+let columns=canvas.width/fontSize;
+let drops=[];
+
+for(let x=0;x<columns;x++) drops[x]=1;
+
+function draw(){
+    ctx.fillStyle="rgba(0,0,0,0.05)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    ctx.fillStyle="rgba(0, 255, 204, 0.4)"; 
+    ctx.font=fontSize+"px monospace";
+
+    for(let i=0;i<drops.length;i++){
+        let text=letters[Math.floor(Math.random()*letters.length)];
+        ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+
+        if(drops[i]*fontSize>canvas.height && Math.random()>0.975)
+            drops[i]=0;
+
+        drops[i]++;
+    }
+}
+setInterval(draw,35);
+
+// RECALCULAR MATRIX AO REDIMENSIONAR TELA (Responsividade)
+window.addEventListener('resize', () => {
+    initMatrix();
+    columns=canvas.width/fontSize;
+    drops=[];
+    for(let x=0;x<columns;x++) drops[x]=1;
+});
+
+// PROGRESS
+window.onscroll=function(){
+    let winScroll=document.documentElement.scrollTop;
+    let height=document.documentElement.scrollHeight-document.documentElement.clientHeight;
+    let scrolled=(winScroll/height)*100;
+    progress.style.width=scrolled+"%";
+}
+</script>
+
+</body>
+</html>
